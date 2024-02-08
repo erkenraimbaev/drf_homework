@@ -26,5 +26,5 @@ class Lesson(models.Model):
         return f'{self.title} {self.description}'
 
     class Meta:
-        verbose_name = 'курс'
-        verbose_name_plural = 'курсы'
+        verbose_name = 'урок'
+        verbose_name_plural = 'уроки'
