@@ -14,15 +14,6 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to='users/', verbose_name='аватар', **NULLABLE)
     phone = models.CharField(max_length=50, verbose_name='номер телефона', **NULLABLE)
     city = models.CharField(max_length=150, verbose_name='страна', **NULLABLE)
-    is_staff = models.BooleanField(default=False, verbose_name='статус персонала',
-                                   help_text=_(
-                                       "Определяет, может ли пользователь войти на этот сайт администрирования"),
-                                   )
-    is_active = models.BooleanField(default=True, verbose_name='активный пользовавтель',
-                                    help_text=_(
-                                        "Определяет, следует ли считать этого пользователя активным.")
-                                    )
-    date_joined = models.DateTimeField(default=timezone.now, verbose_name='Дата подключения')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

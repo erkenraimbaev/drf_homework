@@ -15,6 +15,6 @@ urlpatterns = [
                 path('lessons/', LessonListView.as_view(), name='lesson-list'),
                 path('lessons/<int:pk>', LessonDetailView.as_view(), name='lesson'),
                 path('lessons/create', LessonCreateView.as_view(), name='lesson-create'),
-                path('lessons/<int:pk>', LessonUpdateView.as_view(), name='lesson-update'),
-                path('lessons/<int:pk>', LessonDeleteView.as_view(), name='lesson-delete'),
+                path('lessons/update/<int:pk>', LessonUpdateView.as_view(), name='lesson-update'),
+                path('lessons/delete/<int:pk>', LessonDeleteView.as_view(), name='lesson-delete'),
               ]
