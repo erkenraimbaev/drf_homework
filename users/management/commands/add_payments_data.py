@@ -8,7 +8,7 @@ from users.models import Payment, User
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        user = User.objects.create(email='testemail3@mail.ru', first_name='Test', last_name='Testov')
+        user = User.objects.create(email='mail123@mail.ru', first_name='Test', last_name='Testov')
 
         course = Course.objects.create(title='test', description='test course')
 
