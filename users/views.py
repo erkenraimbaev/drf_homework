@@ -11,9 +11,38 @@ from users.serializers import PaymentSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class UserDetailView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserCreateView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def perform_create(self, serializer):
+        user = serializer.save(is_active=True)
+        user.set_password(user.password)
+        user.save()
+
+
+class UserUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def perform_update(self, serializer):
+        user = serializer.save(is_active=True)
+        user.set_password(user.password)
+        user.save()
+
+
+class UserDeleteView(generics.DestroyAPIView):
+    queryset = User.objects.all()
 
 
 class MyTokenObtainPairView(TokenObtainPairView):

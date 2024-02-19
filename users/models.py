@@ -39,7 +39,7 @@ class Payment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, verbose_name='курс', related_name='lessons',
                                **NULLABLE)
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, verbose_name='урок', **NULLABLE)
-    amount = models.PositiveIntegerField(verbose_name='')
+    amount = models.PositiveIntegerField(verbose_name='цена')
     payment_method = models.CharField(max_length=50, choices=PAYMENT_METHOD, verbose_name='способ оплаты')
 
     def __str__(self):
