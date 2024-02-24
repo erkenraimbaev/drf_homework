@@ -8,6 +8,8 @@ from lms.models import Course, Lesson, CourseSubscribe
 from lms.paginators import LMSPaginator
 from lms.serializers import CourseSerializer, LessonSerializer, CourseSubscribeSerializer
 from lms.permissions import IsModerator, IsOwner
+# import requests
+# from requests.exceptions import RequestException
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -84,8 +86,8 @@ class CourseSubscribeCreateAPIView(generics.CreateAPIView):
     serializer_class = CourseSubscribeSerializer
     permission_classes = [IsAuthenticated]
 
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class CourseSubscribeListAPIView(generics.ListAPIView):
@@ -104,3 +106,17 @@ class CourseSubscribeDestroyAPIView(generics.DestroyAPIView):
     def perform_destroy(self, instance):
         instance.user = self.request.user
         instance.delete()
+
+# class SomeAPIView(APIView):
+#
+#     def get(self, *args, **kwargs):
+#         try:
+#             response = requests.get('https://api.example.com/data')
+#             # Проверка на ошибки HTTP
+#             response.raise_for_status()
+#             data = response.json()
+#             # Обработка полученных данных
+#             return Response(data)
+#         except RequestException as e:
+#             # Обработка исключения
+#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
