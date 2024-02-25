@@ -1,10 +1,7 @@
-import os
 import time
 
 import stripe
-
-API_KEY_STRIPE = "sk_test_51OnE64FwFkowwNr6ZMzQCxlzn29ONRUpLAHroYfHYSOvARJC9TqSUqoaUnNx6pUnrI6" \
-                 "1Ucef5rZI9X1jCqt3VqZJ00JiJd9Pnm"
+from config.settings import API_KEY_STRIPE
 
 
 def get_link_to_payment(course_title: str, course_price: int) -> dict:
@@ -40,8 +37,7 @@ def get_link_to_payment(course_title: str, course_price: int) -> dict:
 
 
 def get_session(session_id: str):
-    stripe.api_key = "sk_test_51OnE64FwFkowwNr6ZMzQCxlzn29ONRUpLAHroYfHYSOvARJC9TqSUqoaUnNx6pUnrI6" \
-                     "1Ucef5rZI9X1jCqt3VqZJ00JiJd9Pnm"
+    stripe.api_key = API_KEY_STRIPE
 
     session = stripe.checkout.Session.retrieve(session_id)
     return session
