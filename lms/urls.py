@@ -21,5 +21,5 @@ urlpatterns = [
     path('subscribe/', CourseSubscribeCreateAPIView.as_view(), name='subscribe'),
     path('unsubscribe/<int:pk>/', CourseSubscribeDestroyAPIView.as_view(), name='unsubscribe'),
     path('subscribe_list/', CourseSubscribeListAPIView.as_view(), name='subscribe_list'),
-    path('subscribe_course/<int:course_id>/', CourseSubscribePostAPIView.as_view(), name='subscribe_course'),
+    path('subscribe_course/', CourseSubscribePostAPIView.as_view(), name='subscribe_course'),
 ]

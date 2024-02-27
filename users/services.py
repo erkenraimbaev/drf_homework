@@ -3,11 +3,14 @@ import time
 import stripe
 from config.settings import API_KEY_STRIPE
 
+from lms.models import Course
+from lms.models import Lesson
+
 
 def get_link_to_payment(course_title: str, course_price: int) -> dict:
     """ Функция для получения ссылки на оплату"""
 
-    stripe.api_key = API_KEY_STRIPE
+    stripe.api_key = ''
 
     # Создаем продукт для оплаты
     product = stripe.Product.create(name=course_title)
@@ -33,7 +36,7 @@ def get_link_to_payment(course_title: str, course_price: int) -> dict:
         success_url='https://example.com/success',
 
     )
-    return session
+    return session.get('url')
 
 
 def get_session(session_id: str):

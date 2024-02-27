@@ -16,6 +16,5 @@ urlpatterns = [path('users/', UserListView.as_view(), name='users-list'),
                path('payments/', PaymentListView.as_view(), name='payments'),
                path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
                path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-               path('course/buy/', PaymentCreateView.as_view(), name='course_buy'),
-               path('payment_status/', PaymentDetailView.as_view(), name='payment_status'),
+               path('course_or_lesson/buy/', PaymentCreateView.as_view(), name='course_buy'),
                ]

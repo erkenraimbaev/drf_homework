@@ -45,7 +45,6 @@ class Payment(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, verbose_name='урок', **NULLABLE)
     amount = models.PositiveIntegerField(verbose_name='цена')
     payment_method = models.CharField(max_length=50, choices=PAYMENT_METHOD, verbose_name='способ оплаты')
-    session_id = models.CharField(max_length=100, verbose_name='номер сесси для оплаты', **NULLABLE)
     payment_status = models.CharField(max_length=50, choices=PAYMENT_STATUS, default='open',
                                       verbose_name='статус платежа'
                                       )
