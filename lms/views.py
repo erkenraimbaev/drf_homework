@@ -8,6 +8,9 @@ from lms.models import Course, Lesson, CourseSubscribe
 from lms.paginators import LMSPaginator
 from lms.serializers import CourseSerializer, LessonSerializer, CourseSubscribeSerializer
 from lms.permissions import IsModerator, IsOwner
+from lms.tasks import send_course_update
+
+
 # import requests
 # from requests.exceptions import RequestException
 
@@ -36,17 +39,23 @@ class CourseSubscribePostAPIView(APIView):
     permission_classes = [IsAuthenticated]
     queryset = Course.objects.all()
 
-    def post(self, request, course_id):
-        user = request.user
-        course = get_object_or_404(Course, id=course_id)
-        sub, created_sub = CourseSubscribe.objects.get_or_create(user=user, course=course)
-        if created_sub:
+    def post(self, request):
+        user = self.request.user
+        data = self.request.data
+        course_id = data.get('course')
+        course = get_object_or_404(Course, pk=course_id)
+        sub_item = CourseSubscribe.objects.filter(user=user, course=course)
+        print(sub_item)
+        if not sub_item.exists:
+            subscribe = CourseSubscribe.objects.create(user=user, course=course)
             message = 'Подписка на данный курс оформлена'
-            created_sub.save()
-        elif sub:
-            sub.delete()
-            sub.save()
+            subscribe.save()
+
+        else:
+            sub_item.delete()
+            # sub_item.save()
             message = 'Подписка на данный курс удалена.'
+
 
         return Response({"message": message})
 
@@ -69,11 +78,25 @@ class LessonCreateView(generics.CreateAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, ~IsModerator]
 
+    def perform_create(self, serializer):
+        new_lesson = serializer.save()
+        new_lesson.owner = self.request.user
+        new_lesson.save()
+        if new_lesson:
+            send_course_update.delay(new_lesson.course.id)
+
 
 class LessonUpdateView(generics.UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated | IsOwner | IsModerator]
+
+    def perform_update(self, serializer):
+        update_lesson = serializer.save()
+        update_lesson.owner = self.request.user
+        update_lesson.save()
+        if update_lesson:
+            send_course_update.delay(update_lesson.course.id)
 
 
 class LessonDeleteView(generics.DestroyAPIView):
@@ -106,17 +129,3 @@ class CourseSubscribeDestroyAPIView(generics.DestroyAPIView):
     def perform_destroy(self, instance):
         instance.user = self.request.user
         instance.delete()
-
-# class SomeAPIView(APIView):
-#
-#     def get(self, *args, **kwargs):
-#         try:
-#             response = requests.get('https://api.example.com/data')
-#             # Проверка на ошибки HTTP
-#             response.raise_for_status()
-#             data = response.json()
-#             # Обработка полученных данных
-#             return Response(data)
-#         except RequestException as e:
-#             # Обработка исключения
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
