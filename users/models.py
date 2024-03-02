@@ -48,6 +48,8 @@ class Payment(models.Model):
     payment_status = models.CharField(max_length=50, choices=PAYMENT_STATUS, default='open',
                                       verbose_name='статус платежа'
                                       )
+    payment_link = models.TextField(verbose_name='ссылка платежа', **NULLABLE)
+    payment_id = models.TextField(verbose_name='номер сессии платежа', **NULLABLE)
 
     def __str__(self):
         return f"{self.user} on  {self.date}"
