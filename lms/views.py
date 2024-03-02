@@ -11,10 +11,6 @@ from lms.permissions import IsModerator, IsOwner
 from lms.tasks import send_course_update
 
 
-# import requests
-# from requests.exceptions import RequestException
-
-
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
@@ -41,7 +37,7 @@ class CourseSubscribePostAPIView(APIView):
 
     def post(self, request):
         user = self.request.user
-        data = self.request.data
+        data = request.data
         course_id = data.get('course')
         course = get_object_or_404(Course, pk=course_id)
         sub_item = CourseSubscribe.objects.filter(user=user, course=course)
@@ -53,9 +49,7 @@ class CourseSubscribePostAPIView(APIView):
 
         else:
             sub_item.delete()
-            # sub_item.save()
             message = 'Подписка на данный курс удалена.'
-
 
         return Response({"message": message})
 
@@ -83,7 +77,8 @@ class LessonCreateView(generics.CreateAPIView):
         new_lesson.owner = self.request.user
         new_lesson.save()
         if new_lesson:
-            send_course_update.delay(new_lesson.course.id)
+            message = f'На курсе {new_lesson.course.title} появился новый урок {new_lesson.title}'
+            send_course_update.delay(new_lesson.course.id, message)
 
 
 class LessonUpdateView(generics.UpdateAPIView):
@@ -96,13 +91,19 @@ class LessonUpdateView(generics.UpdateAPIView):
         update_lesson.owner = self.request.user
         update_lesson.save()
         if update_lesson:
-            send_course_update.delay(update_lesson.course.id)
+            message = f'На курсе {update_lesson.course.title} обновился урок {update_lesson.title}'
+            send_course_update.delay(update_lesson.course.id, message)
 
 
 class LessonDeleteView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated | IsOwner | ~IsModerator]
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        message = f'На курсе {instance.course.title} ,был удален урок {instance.title}'
+        send_course_update.delay(instance.course.id, message)
 
 
 class CourseSubscribeCreateAPIView(generics.CreateAPIView):
